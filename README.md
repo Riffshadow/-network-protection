@@ -24,28 +24,39 @@ sudo nmap -sV <ip-адрес>
 
 ### Решение
 
-sudo nmap -sA <ip-адрес>
+sudo nmap -sA 198.168.56.102
 ![1.1.png](https://github.com/Riffshadow/-network-protection/blob/main/1.1.png)
 
+sudo nmap -sT 198.168.56.102
+![1.2.png](https://github.com/Riffshadow/-network-protection/blob/main/1.2.png)
 
+sudo nmap -sS 198.168.56.102
+![1.3.png](https://github.com/Riffshadow/-network-protection/blob/main/1.3.png)
 
+sudo nmap -sV 198.168.56.102
+![1.4.png](https://github.com/Riffshadow/-network-protection/blob/main/1.4.png)
 
+В качестве ответа события, которые появились в логах Suricata:
+![1.5.png](https://github.com/Riffshadow/-network-protection/blob/main/1.5.png)
 
+В качестве ответа пришли события, которые появились в логах Fail2Ban:
+![1.6.png](https://github.com/Riffshadow/-network-protection/blob/main/1.6.png)
 
+![1.7.png](https://github.com/Riffshadow/-network-protection/blob/main/1.7.png)
 
+### Комментарий
 
+Suricata обнаружила разведку Nmap и выдала:
 
+ET SCAN Possible Nmap User-Agent Observed
 
+от:
 
+192.168.56.103 → 192.168.56.102
 
+А Fail2Ban на Nmap не отреагировал, потому что jail sshd реагирует на неудачные попытки SSH-аутентификации, а сканирование портов само по себе таким событием не является.
 
-
-
-
-
-
-
-
+То есть не «Fail2Ban ничего не сделал, ой всё сломалось», а наоборот — это корректное и объяснимое поведение двух разных средств защиты
 
 
 ## Задание 2
@@ -158,6 +169,8 @@ cat pass.txt
 
 Атака была запущена с виртуальной машины **virtualdva** командой:
 
+![2.2.png](https://github.com/Riffshadow/-network-protection/blob/main/2.2.png) 
+
 ```bash
 hydra -t 4 -L users.txt -P pass.txt ssh://192.168.56.102
 ```
@@ -165,6 +178,8 @@ hydra -t 4 -L users.txt -P pass.txt ssh://192.168.56.102
 > **Важно:** параметр `-t 4` ограничивает количество одновременных соединений до четырёх. Это позволяет SSH-серверу корректнее обрабатывать попытки подключения и записывать события аутентификации в системный журнал.
 
 ##### Результат Hydra
+
+
 
 В процессе выполнения Hydra могла появляться ошибка:
 
@@ -183,6 +198,8 @@ OpenSSH имеет собственные механизмы ограничен�
 #### Анализ результатов защиты 🛡️
 
 ##### Логи Suricata (`fast.log`)
+
+
 
 В журнале Suricata были обнаружены события сетевой активности, например:
 
@@ -204,14 +221,21 @@ Suricata зафиксировала подозрительную сетевую 
 ---
 
 ##### Логи Fail2Ban (`fail2ban.log`)
+![2.png](https://github.com/Riffshadow/-network-protection/blob/main/2.png)
+
 
 Для просмотра журнала Fail2Ban использовалась команда:
 
 ```bash
 sudo tail -f /var/log/fail2ban.log
 ```
+![2.1.png](https://github.com/Riffshadow/-network-protection/blob/main/2.1.png) 
+
 
 Также состояние защиты SSH проверялось командой:
+
+![2.3.png](https://github.com/Riffshadow/-network-protection/blob/main/2.3.png) 
+
 
 ```bash
 sudo fail2ban-client status sshd
