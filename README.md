@@ -25,7 +25,7 @@ sudo nmap -sV <ip-адрес>
 ### Решение
 
 sudo nmap -sA <ip-адрес>
-1.1.png
+![Результат](11.png)
 
 
 
