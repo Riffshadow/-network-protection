@@ -25,7 +25,7 @@ sudo nmap -sV <ip-адрес>
 ### Решение
 
 sudo nmap -sA <ip-адрес>
-![Результат](11.png)
+![1.1.png](https://github.com/Riffshadow/-network-protection/blob/main/1.1.png)
 
 
 
